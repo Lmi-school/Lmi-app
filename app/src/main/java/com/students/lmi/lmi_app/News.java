@@ -200,7 +200,8 @@ public class News extends Activity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnCreate:
-                if (k != 0) {
+                //for (int i=0;i<k;i++){
+                if (k!=0){
                     LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(fillParent, fillParent, 1f);
                     lParams.setMargins(5, 5, 5, 5);
                     LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(fillParent, fillParent);
