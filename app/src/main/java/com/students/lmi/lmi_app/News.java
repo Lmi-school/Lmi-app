@@ -150,8 +150,28 @@ public class News extends Activity implements View.OnClickListener{
         int id = item.getItemId();
         switch (id) {
             case R.id.action_search:
-                //Intent intent = new Intent(this, CurrentNews.class);
-                //startActivity(intent);
+                Intent intent = new Intent(this, CurrentNews.class);
+                startActivity(intent);
+                String filename = "myfile";
+
+                File file = new File(getFilesDir(), filename);
+                try{
+                    file.createNewFile();
+                    BufferedWriter output = new BufferedWriter(new FileWriter(file));
+                    output.write(file.getAbsolutePath());
+                    output.close();
+                    BufferedReader input = new BufferedReader(new FileReader(file));
+                    String string1 = new String();
+                    string1 = input.readLine();
+                    input.close();
+
+                    TextView articleText = (TextView) findViewById(R.id.articleText);
+                    /*if (file.exists())*/
+                    //articleText.setText(string1);
+                }
+                catch(IOException e){
+                    e.printStackTrace();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -228,27 +248,6 @@ public class News extends Activity implements View.OnClickListener{
                 newsCount = 0;
                 break;
             case R.id.btnRefresh:
-                /*String filename = "myfile";
-
-                File file = new File(getFilesDir(), filename);
-                try{
-                    file.createNewFile();
-
-                    BufferedWriter output = new BufferedWriter(new FileWriter(file));
-                    output.write(file.getAbsolutePath());
-                    output.close();
-                    BufferedReader input = new BufferedReader(new FileReader(file));
-                    String string1 = new String();
-                    string1 = input.readLine();
-                    input.close();
-
-                    Button btn = (Button) findViewById(R.id.btnRefresh);
-                    if (file.exists())
-                        btn.setText(string1);
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }*/
                 if (k!=0) {
                     btnCreate.setEnabled(true);
                 }
