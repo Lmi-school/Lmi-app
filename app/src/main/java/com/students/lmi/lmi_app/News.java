@@ -114,21 +114,40 @@ public class News extends Activity implements View.OnClickListener{
             newslist.clear();
             titlelist.clear();
             datelist.clear();
-            try
-            {
-                String site = "http://lmi-school.ru/?p=2";
-                Page = Jsoup.connect(site).get();
-                title = Page.select(".titlediv");
+            String filename = "TitlesList";
+            File file = new File(getFilesDir(), filename);
+            if (!(file.exists())) {
+                try {
+                    file.createNewFile();
+                    BufferedWriter output = new BufferedWriter(new FileWriter(file));
+                    String site = "http://lmi-school.ru/?p=2";
+                    Page = Jsoup.connect(site).get();
+                    title = Page.select(".titlediv");
 
-                for (Element titles : title) {
-                    titlelist.add(titles.text().substring(13));
-                    datelist.add(titles.text().substring(0, 10));
-                    k++;
+                    for (Element titles : title) {
+                        titlelist.add(titles.text().substring(13));
+                        datelist.add(titles.text().substring(0, 10));
+                        output.write(titles.text() + "\n");
+                        k++;
+                    }
+                    output.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            catch (IOException e)
-            {
-                e.printStackTrace();
+            else {
+                try {
+                    BufferedReader input = new BufferedReader(new FileReader(file));
+                    String line;
+                    while ((line = input.readLine()) != null) {
+                        titlelist.add(line.substring(13));
+                        datelist.add(line.substring(0, 10));
+                        k++;
+                    }
+                }
+                catch (IOException e){
+                    e.printStackTrace();
+                }
             }
             //btnCreate.setEnabled(true);
             return null;
@@ -161,7 +180,7 @@ public class News extends Activity implements View.OnClickListener{
                     output.write(file.getAbsolutePath());
                     output.close();
                     BufferedReader input = new BufferedReader(new FileReader(file));
-                    String string1 = new String();
+                    String string1;
                     string1 = input.readLine();
                     input.close();
 
