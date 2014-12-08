@@ -85,12 +85,15 @@ public class News extends Activity implements View.OnClickListener{
         new siteParser().execute();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        // Setting onClickListeners on buttons and doing some usual initializing whatnot
         mainLinear = (LinearLayout) findViewById(R.id.mainLinear);
         btnRefresh = (Button) findViewById(R.id.btnRefresh);
         btnRefresh.setOnClickListener(this);
         btnCreate = (Button) findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(this);
-        btnCreate.setEnabled(false);
+        String filename = "TitlesList"; // Checking if file is exists
+        File file = new File(getFilesDir(), filename);
+        if (!(file.exists())) btnCreate.setEnabled(false); // if not then disabling button
         btnClear = (Button) findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
     }
@@ -170,27 +173,8 @@ public class News extends Activity implements View.OnClickListener{
         switch (id) {
             case R.id.action_search:
                 Intent intent = new Intent(this, CurrentNews.class);
-                startActivity(intent);
-                String filename = "myfile";
-
-                File file = new File(getFilesDir(), filename);
-                try{
-                    file.createNewFile();
-                    BufferedWriter output = new BufferedWriter(new FileWriter(file));
-                    output.write(file.getAbsolutePath());
-                    output.close();
-                    BufferedReader input = new BufferedReader(new FileReader(file));
-                    String string1;
-                    string1 = input.readLine();
-                    input.close();
-
-                    TextView articleText = (TextView) findViewById(R.id.articleText);
-                    /*if (file.exists())*/
-                    //articleText.setText(string1);
-                }
-                catch(IOException e){
-                    e.printStackTrace();
-                }
+                startActivity(intent); // Just creating new activity for single piece of news
+                // TODO open articles here
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -204,72 +188,75 @@ public class News extends Activity implements View.OnClickListener{
                 if (k!=0){
                     LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(fillParent, fillParent, 1f);
                     lParams.setMargins(5, 5, 5, 5);
-                    LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(fillParent, fillParent);
-                    //textParams.setMargins(0, 0, 10, 5);
-                    LinearLayout.LayoutParams withoutMarginsParams = new LinearLayout.LayoutParams(fillParent, fillParent);
-                    LinearLayout.LayoutParams text1Params = new LinearLayout.LayoutParams(wrapContent, wrapContent);
-                    LinearLayout.LayoutParams dateParams = new LinearLayout.LayoutParams(fillParent, fillParent, 1f);
-                    LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(wrapContent, wrapContent);
+                    // Creating different layout parameters for future uses
+                    LinearLayout.LayoutParams dateParams = new LinearLayout.LayoutParams(fillParent, fillParent, 1f); // Fill parent fully with 1f margins
+                    LinearLayout.LayoutParams withoutMarginsParams = new LinearLayout.LayoutParams(fillParent, fillParent);  // The same but without margins
+                    LinearLayout.LayoutParams text1Params = new LinearLayout.LayoutParams(wrapContent, wrapContent); // Layout for title
+                    LinearLayout.LayoutParams imgParams = new LinearLayout.LayoutParams(wrapContent, wrapContent); // Layout for image in article preview
+                                                                                                                   // with margins in next line
                     imgParams.setMargins(0, 0, 10, 0);
-                    LinearLayout.LayoutParams imgDotsParams = new LinearLayout.LayoutParams(wrapContent, wrapContent);
+                    LinearLayout.LayoutParams imgDotsParams = new LinearLayout.LayoutParams(wrapContent, wrapContent); // Layout with gravity bottom for dots image
                     imgDotsParams.gravity = Gravity.BOTTOM;
 
+                    // Transforming and adding title and date
                     TextView textNew = new TextView(this);
                     String tempString;
-                    TextView textDate = new TextView(this);
-                    tempString = titlelist.get(newsCount).toString();
+                    tempString = titlelist.get(newsCount).toString(); // Taking first title
                     SpannableString spanString = new SpannableString(tempString);
-                    spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
-//              textNew.setGravity(16);
-                    textNew.setTextColor(Color.rgb(0, 36, 76));
-                    textNew.setTextSize(14);
+                    spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0); // Making bold and
+                    textNew.setTextColor(Color.rgb(0, 36, 76)); // Coloring it
+                    textNew.setTextSize(14); // Resizing
                     textNew.setText(spanString);
-                    textNew.setMaxLines(2);
-                    //textNew.setLineSpacing(3.2f, 0.8f);
+                    textNew.setMaxLines(2); // Setting two lines limitation
+                                            // TODO rewrite limitation for all resolutions
 
+                    TextView textDate = new TextView(this); // The same stuff for date text
                     tempString = datelist.get(newsCount).toString();
                     SpannableString spanString1 = new SpannableString(tempString);
                     textDate.setTextColor(Color.rgb(103, 103, 103));
                     spanString1.setSpan(new StyleSpan(Typeface.ITALIC), 0, spanString1.length(), 0);
                     textDate.setText(spanString1);
-                    textDate.setGravity(80);
-                    textDate.setTextSize(12);
-                    textDate.setMaxLines(1);
+                    textDate.setGravity(80); // Bottom right corner gravity
+                    textDate.setTextSize(12); // Resizing text
+                    textDate.setMaxLines(1); // This would not ever be used xD
 
                     ImageView imgDots = new ImageView(this);
-                    imgDots.setImageResource(R.drawable.ic_more_horiz_black_24dp);
+                    imgDots.setImageResource(R.drawable.ic_more_horiz_black_24dp); // Adding fancy dots in bottom right corner
 
                     ImageView imgNew = new ImageView(this);
-                    imgNew.setImageResource(R.drawable.news1);
+                    imgNew.setImageResource(R.drawable.news1); // Placing the image
+                                                               // TODO take images from the site
 
                     LinearLayout layoutNew = new LinearLayout(this);
-                    layoutNew.setBackgroundColor(Color.rgb(165, 219, 222));
-                    layoutNew.setOrientation(horizontal);
+                    layoutNew.setBackgroundColor(Color.rgb(165, 219, 222));  // Creating main layout to most outer one
+                    layoutNew.setOrientation(horizontal);                    // to keep image and InnerFirst layout
 
-                    LinearLayout layoutInnerFirst = new LinearLayout(this);
+                    LinearLayout layoutInnerFirst = new LinearLayout(this); // Layout that keeps title and InnerSecond layout
                     layoutInnerFirst.setOrientation(vertical);
 
-                    LinearLayout layoutInnerSecond = new LinearLayout(this);
+                    LinearLayout layoutInnerSecond = new LinearLayout(this); // Layout for date and dots image
                     layoutInnerSecond.setOrientation(horizontal);
 
-                    mainLinear.addView(layoutNew, lParams);
-                    layoutNew.addView(imgNew, imgParams);
-                    layoutInnerFirst.addView(textNew, text1Params);
-                    layoutNew.addView(layoutInnerFirst, withoutMarginsParams);
+                    mainLinear.addView(layoutNew, lParams); // Adding main layout
+                    layoutNew.addView(imgNew, imgParams); // Placing image there
+                    layoutInnerFirst.addView(textNew, text1Params); // Modifying InnerFirst with title text
+                    layoutNew.addView(layoutInnerFirst, withoutMarginsParams); // and placing it onto main one
 
-                    layoutInnerFirst.addView(layoutInnerSecond, withoutMarginsParams);
-                    layoutInnerSecond.addView(textDate, dateParams);
-                    layoutInnerSecond.addView(imgDots, imgDotsParams);
-                    newsCount++;
+                    layoutInnerFirst.addView(layoutInnerSecond, withoutMarginsParams); // Adding second inner layout to first
+                    layoutInnerSecond.addView(textDate, dateParams); // Placing date text
+                    layoutInnerSecond.addView(imgDots, imgDotsParams); // and fancy dots image there
+
+                    newsCount++; // Taking next piece of news for current
+                                 // TODO replace this with dynamic loading for 15-20 news at the time
                 }
                 break;
             case R.id.btnClear:
-                mainLinear.removeAllViews();
-                newsCount = 0;
+                mainLinear.removeAllViews(); // Clearing all the screen
+                newsCount = 0; // Resetting counter to show first news first again
                 break;
             case R.id.btnRefresh:
                 if (k!=0) {
-                    btnCreate.setEnabled(true);
+                    btnCreate.setEnabled(true); // TODO rewrite to auto-check of news loading state
                 }
                 break;
         }
