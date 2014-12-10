@@ -111,7 +111,7 @@ public class News extends Activity implements View.OnClickListener{
         btnRefresh.setOnClickListener(this);
         btnCreate = (Button) findViewById(R.id.btnCreate);
         btnCreate.setOnClickListener(this);
-        String filename = "TitlesList"; // Checking if file is exists
+        String filename = "TitlesList"; // Checking if file is exists,ya
         File file = new File(getFilesDir(), filename);
         if ((!(file.exists())||file.length()==0)) btnCreate.setEnabled(false); // if not then disabling button; it's more right, ya?
         btnClear = (Button) findViewById(R.id.btnClear);
