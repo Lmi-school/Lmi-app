@@ -30,6 +30,7 @@ import android.os.UserHandle;
 import android.provider.ContactsContract;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
@@ -60,6 +61,7 @@ import org.w3c.dom.Text;
 
 public class News extends Activity implements View.OnClickListener{
 
+    private MyScrollView scrollView;
     LinearLayout mainLinear;
     Button btnCreate;
     Button btnClear;
@@ -85,6 +87,24 @@ public class News extends Activity implements View.OnClickListener{
         new siteParser().execute();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        {scrollView = (MyScrollView) findViewById(R.id.scrollView);
+        scrollView.setOnScrollViewChange(new MyScrollView.OnScrollViewListener() {
+            @Override
+            public void onScrollChanged(int l, int t, int oldl, int oldt) {
+                Log.d("androidcasts", "onScrollChanged");
+            }
+
+            @Override
+            public void onScrollBottomDetect() {
+                Log.d("androidcasts", "onScrollBottomDetect");
+
+            }
+
+            @Override
+            public void onScrollTopDetect() {
+                Log.d("androidcasts", "onScrollTopDetect");
+            }
+        });}
         // Setting onClickListeners on buttons and doing some usual initializing whatnot
         mainLinear = (LinearLayout) findViewById(R.id.mainLinear);
         btnRefresh = (Button) findViewById(R.id.btnRefresh);
@@ -93,7 +113,7 @@ public class News extends Activity implements View.OnClickListener{
         btnCreate.setOnClickListener(this);
         String filename = "TitlesList"; // Checking if file is exists
         File file = new File(getFilesDir(), filename);
-        if (!(file.exists())) btnCreate.setEnabled(false); // if not then disabling button
+        if ((!(file.exists())||file.length()==0)) btnCreate.setEnabled(false); // if not then disabling button; it's more right, ya?
         btnClear = (Button) findViewById(R.id.btnClear);
         btnClear.setOnClickListener(this);
     }
@@ -113,13 +133,14 @@ public class News extends Activity implements View.OnClickListener{
         protected String doInBackground(String... arg)
         {
             k=0;
+            Log.i("Parsing", "started");
             Document Page=null;
             newslist.clear();
             titlelist.clear();
             datelist.clear();
             String filename = "TitlesList";
             File file = new File(getFilesDir(), filename);
-            if (!(file.exists())) {
+            if ((!(file.exists())||file.length()==0)) {
                 try {
                     file.createNewFile();
                     BufferedWriter output = new BufferedWriter(new FileWriter(file));
@@ -134,6 +155,7 @@ public class News extends Activity implements View.OnClickListener{
                         k++;
                     }
                     output.close();
+                    Log.i("Parsing", "finished");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -257,6 +279,7 @@ public class News extends Activity implements View.OnClickListener{
             case R.id.btnRefresh:
                 if (k!=0) {
                     btnCreate.setEnabled(true); // TODO rewrite to auto-check of news loading state
+                    Log.i("Refresh", "news");
                 }
                 break;
         }

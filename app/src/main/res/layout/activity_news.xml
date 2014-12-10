@@ -29,7 +29,8 @@
             android:text="Refresh"
             android:id="@+id/btnRefresh" />
     </LinearLayout>
-    <ScrollView
+    <com.students.lmi.lmi_app.MyScrollView
+        android:id="@+id/scrollView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#EBEBEB">
@@ -39,5 +40,5 @@
             android:orientation="vertical"
             android:id="@+id/mainLinear">
         </LinearLayout>
-    </ScrollView>
+    </com.students.lmi.lmi_app.MyScrollView>
 </LinearLayout>
