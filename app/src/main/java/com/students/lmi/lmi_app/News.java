@@ -232,7 +232,7 @@ public class News extends Activity implements View.OnClickListener{
                     textNew.setMaxLines(2); // Setting two lines limitation
                                             // TODO rewrite limitation for all resolutions
 
-                    TextView textDate = new TextView(this); // The same stuff for date text
+                    TextView textDate = new TextView(this); // The same stuff for date text,test
                     tempString = datelist.get(newsCount).toString();
                     SpannableString spanString1 = new SpannableString(tempString);
                     textDate.setTextColor(Color.rgb(103, 103, 103));
