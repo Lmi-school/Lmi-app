@@ -223,7 +223,7 @@ public class News extends Activity implements View.OnClickListener{
                     // Transforming and adding title and date
                     TextView textNew = new TextView(this);
                     String tempString;
-                    tempString = titlelist.get(newsCount).toString(); // Taking first title
+                    tempString = titlelist.get(newsCount).toString(); // Taking first title,check
                     SpannableString spanString = new SpannableString(tempString);
                     spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0); // Making bold and
                     textNew.setTextColor(Color.rgb(0, 36, 76)); // Coloring it
