@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:orientation="vertical"
     android:layout_height="fill_parent"
-    android:background="#ffc1deff">
+    android:background="#ffc4dffe">
 
 
     <Button
@@ -14,7 +14,6 @@
         android:text="Refresh"
         android:id="@+id/Refresh"
         android:layout_gravity="center_horizontal"
-        android:onClick="viewNews"
         android:layout_marginBottom="15dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
@@ -28,5 +27,5 @@
         android:smoothScrollbar="true"
         android:divider="#ffc4dffe"
         android:dividerHeight="15dp"
-        android:background="#ffc0c7fe"></ListView>
+        android:background="#ffc4dffe"></ListView>
 </LinearLayout>

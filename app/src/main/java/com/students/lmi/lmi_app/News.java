@@ -1,18 +1,12 @@
 package com.students.lmi.lmi_app;
-
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -25,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -42,30 +35,33 @@ public class News extends ListActivity{
     final String ATTRIBUTE_NAME_TEXT = "text";
     final String ATTRIBUTE_NAME_IMAGE = "image";
     final String ATTRIBUTE_NAME_DATETEXT = "date";
+    SimpleAdapter sAdapter;
     Elements title;
     int k=0;
-    int idOfNew = 309;
+    int t=15; //t - индекс последнего прогруженного элемента
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         newsCount = 0;
-
+        t = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
-        // Setting onClickListeners on buttons and doing some usual initializing whatnot
-        String filename = "TitlesList"; // Checking if file is exists,ya
+        String filename = "TitlesList";
         File file = new File(getFilesDir(), filename);
         String file_gen_name = "NewsList";
         File file_gen = new File(getFilesDir(), file_gen_name);
 
-       if ((file.exists()||file.length()!=0))
+       if ((file.exists()||file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
        {
            String[] from = { ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT };
            // массив ID View-компонентов, в которые будут вставлять данные
            int[] to = { R.id.tvText, R.id.ivImg, R.id.tvDate };
-           SimpleAdapter sAdapter = new SimpleAdapter(this, data,R.layout.item, from, to);
-           setListAdapter(sAdapter);
+           sAdapter = new SimpleAdapter(this, data,R.layout.item, from, to);
+           setListAdapter(sAdapter);//Ставим адаптер
+           sAdapter.notifyDataSetChanged(); // Ставим уведомлялку изменения контента на адаптер
        }
-       new siteParser().execute();
+       new siteParser().execute();//Парсим из сайта/файла.
+       getListView().setOnScrollListener(scrollListener); //Cвязываем наш список с ScrollListener(он создан ниже)
     }
 
     @Override
@@ -77,21 +73,8 @@ public class News extends ListActivity{
     protected void onResume(){
         super.onResume();
     }
-   /* public class siteParseNews extends AsyncTask<String, Void, String>
-    {
-        @Override
-        protected String doInBackground(String... arg)
-        {
-            int n=0;
-            Document Page;
-            String filename = "NewsList";
-            File file_gen = new File(getFilesDir(), filename);
-            for (int i=309-n;)
-            return null;
-        }
-    }*/
 
-    public class siteParser extends AsyncTask<String, Void, String>
+    public class siteParser extends AsyncTask<String, Void, String> //непосредственно сам парсер
     {
         @Override
         protected String doInBackground(String... arg)
@@ -115,22 +98,12 @@ public class News extends ListActivity{
                     title = Page.select(".titlediv");
                     for (Element titles : title) {
                         titlelist.add(titles.text().substring(13));
-
                         datelist.add(titles.text().substring(0, 10));
                         output.write(titles.text() + "\n");
                         k++;
                     }
-                    for (int i=0; i<k; i++) {
-                        Map<String,Object> m;
-                        m = new HashMap<String, Object>();
-                        m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
-                        m.put(ATTRIBUTE_NAME_IMAGE,R.drawable.ic_launcher);
-                        m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
-                        data.add(m);
-
-                    }
                     output.close();
-                    Log.i("Parsing", "finished");
+                    Log.i("Parsing", "finished, t="+Integer.toString(t));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -145,14 +118,7 @@ public class News extends ListActivity{
                         k++;
                         Log.i("Parsing", "k="+Integer.toString(k));
                     }
-                    for (int i=0; i<k; i++) {
-                        Map<String,Object> m;
-                        m = new HashMap<String, Object>();
-                        m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
-                        m.put(ATTRIBUTE_NAME_IMAGE,R.drawable.ic_launcher);
-                        m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
-                        data.add(m);
-                    }
+                    Log.i("Parsing", "finished, t="+Integer.toString(t));
                 }
                 catch (IOException e){
                     e.printStackTrace();
@@ -172,22 +138,40 @@ public class News extends ListActivity{
 
 
 
-
-    public void viewNews(View V)
-    {
-        String[] from = { ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT };
-        // массив ID View-компонентов, в которые будут вставлять данные
-        int[] to = { R.id.tvText, R.id.ivImg, R.id.tvDate  };
-        SimpleAdapter sAdapter = new SimpleAdapter(this, data,R.layout.item, from, to);
-        setListAdapter(sAdapter);
-    }
-
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Intent intent = new Intent(News.this,CurrentNews.class);
         startActivity(intent);
+        //TODO В этой активности нужно сделать вывод полной статьи/новости с сайта
         Log.i("poz", Integer.toString(position));
         //intent.putExtra("new",newslist.get(position));
         super.onListItemClick(l, v, position, id);
+
+
     }
+    AbsListView.OnScrollListener scrollListener = new AbsListView.OnScrollListener() { //Создаем обработчик прокрутки
+        @Override
+        public void onScrollStateChanged(AbsListView absListView, int i) {
+
+        }
+
+        @Override
+        public void onScroll(AbsListView absListView, int first, int i2, int total) { //AbsListView absListView - список,
+            //first - первый видимый элемент,  i2 - количество видимых элементов, total - всего элементов в списке
+            Log.i("Первый элемент в списке:", Integer.toString(first));
+            if (first==total-i2&&total<k) {
+                new siteParser().execute();
+                for (int i=t; i<t+15; i++) if (i<299) { //пихаем новые 15 новостей в массив
+                    Map<String,Object> m;
+                    m = new HashMap<String, Object>();
+                    m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
+                    m.put(ATTRIBUTE_NAME_IMAGE,R.drawable.ic_launcher);
+                    m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
+                    data.add(m);
+                }
+                t+=15; //изменяем ту самую t на 15
+                sAdapter.notifyDataSetChanged(); //Ставим уведомитель x2
+            }
+        }
+    };
 }
