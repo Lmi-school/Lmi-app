@@ -63,6 +63,7 @@ public class News extends ListActivity{
            // массив ID View-компонентов, в которые будут вставлять данные
            int[] to = { R.id.tvText, R.id.ivImg, R.id.tvDate };
            SimpleAdapter sAdapter = new SimpleAdapter(this, data,R.layout.item, from, to);
+           setListAdapter(sAdapter);
        }
        new siteParser().execute();
     }
@@ -114,6 +115,7 @@ public class News extends ListActivity{
                     title = Page.select(".titlediv");
                     for (Element titles : title) {
                         titlelist.add(titles.text().substring(13));
+
                         datelist.add(titles.text().substring(0, 10));
                         output.write(titles.text() + "\n");
                         k++;
