@@ -48,7 +48,9 @@
                 android:text="Some text"
                 android:textSize="19sp"
                 android:layout_gravity="center_vertical"
-                android:gravity="left|top">
+                android:gravity="left|top"
+                android:textStyle="bold"
+                android:typeface="sans">
             </TextView>
         </LinearLayout>
 
@@ -62,7 +64,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Some date"
-                android:id="@+id/tvDate" />
+                android:id="@+id/tvDate"
+                android:textStyle="italic" />
         </LinearLayout>
 
     </LinearLayout>
