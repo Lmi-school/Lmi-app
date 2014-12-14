@@ -53,8 +53,6 @@ public class News extends ListActivity{
         setContentView(R.layout.activity_news);
         String filename = "TitlesList";
         File file = new File(getFilesDir(), filename);
-        String file_gen_name = "NewsList";
-        File file_gen = new File(getFilesDir(), file_gen_name);
         new siteParser().execute();//Парсим из сайта/файла.
        if ((file.exists()||file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
        {
@@ -68,7 +66,6 @@ public class News extends ListActivity{
            setListAdapter(animationAdapter);//Ставим адаптер с анимацией
            sAdapter.notifyDataSetChanged();// Ставим уведомлялку изменения контента на адаптер
            isFirstTime = false;
-          // setListAdapter(sAdapter);//Ставим адаптер без анимации
        }
        new siteParser().execute();//Парсим из сайта/файла.
        getListView().setOnScrollListener(scrollListener); //Cвязываем наш список с ScrollListener(он создан ниже)
@@ -170,7 +167,6 @@ public class News extends ListActivity{
             //first - первый видимый элемент,  i2 - количество видимых элементов, total - всего элементов в списке
             Log.i("Первый элемент в списке:", Integer.toString(first));
             if (first==total-i2&&total<k) {
-                new siteParser().execute();
                 for (int i=t; i<t+15; i++) if (i<299) { //пихаем новые 15 новостей в массив
                     Map<String,Object> m;
                     m = new HashMap<String, Object>();

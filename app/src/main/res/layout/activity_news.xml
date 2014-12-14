@@ -34,4 +34,5 @@
         android:clickable="true"
         android:fastScrollEnabled="false"
         android:focusable="true"></ListView>
+
 </LinearLayout>
