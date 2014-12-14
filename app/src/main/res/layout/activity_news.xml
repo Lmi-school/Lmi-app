@@ -5,7 +5,8 @@
     android:layout_width="fill_parent"
     android:orientation="vertical"
     android:layout_height="fill_parent"
-    android:background="#ffc4dffe">
+    android:background="#ffd7eaed"
+    android:animateLayoutChanges="true">
 
 
     <Button
@@ -25,7 +26,12 @@
         android:layout_height="fill_parent"
         android:id="@android:id/list"
         android:smoothScrollbar="true"
-        android:divider="#ffc4dffe"
-        android:dividerHeight="15dp"
-        android:background="#ffc4dffe"></ListView>
+        android:dividerHeight="10dp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:padding="10dp"
+        android:divider="#ffd7eaed"
+        android:clickable="true"
+        android:fastScrollEnabled="false"
+        android:focusable="true"></ListView>
 </LinearLayout>

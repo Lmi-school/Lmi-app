@@ -10,6 +10,11 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.ScaleInAnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
+import com.nhaarman.listviewanimations.appearance.simple.SwingRightInAnimationAdapter;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,7 +44,7 @@ public class News extends ListActivity{
     Elements title;
     int k=0;
     int t=15; //t - индекс последнего прогруженного элемента
-
+    boolean isFirstTime=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         newsCount = 0;
@@ -50,15 +55,20 @@ public class News extends ListActivity{
         File file = new File(getFilesDir(), filename);
         String file_gen_name = "NewsList";
         File file_gen = new File(getFilesDir(), file_gen_name);
-
+        new siteParser().execute();//Парсим из сайта/файла.
        if ((file.exists()||file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
        {
-           String[] from = { ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT };
+           String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT};
            // массив ID View-компонентов, в которые будут вставлять данные
-           int[] to = { R.id.tvText, R.id.ivImg, R.id.tvDate };
-           sAdapter = new SimpleAdapter(this, data,R.layout.item, from, to);
-           setListAdapter(sAdapter);//Ставим адаптер
-           sAdapter.notifyDataSetChanged(); // Ставим уведомлялку изменения контента на адаптер
+           int[] to = {R.id.tvText, R.id.ivImg, R.id.tvDate};
+           sAdapter = new SimpleAdapter(this, data, R.layout.item, from, to);
+
+           ScaleInAnimationAdapter animationAdapter = new ScaleInAnimationAdapter(sAdapter);
+           animationAdapter.setAbsListView(getListView());
+           setListAdapter(animationAdapter);//Ставим адаптер с анимацией
+           sAdapter.notifyDataSetChanged();// Ставим уведомлялку изменения контента на адаптер
+           isFirstTime = false;
+          // setListAdapter(sAdapter);//Ставим адаптер без анимации
        }
        new siteParser().execute();//Парсим из сайта/файла.
        getListView().setOnScrollListener(scrollListener); //Cвязываем наш список с ScrollListener(он создан ниже)
