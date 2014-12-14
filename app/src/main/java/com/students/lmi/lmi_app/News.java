@@ -42,7 +42,7 @@ public class News extends ListActivity{
     final String ATTRIBUTE_NAME_DATETEXT = "date";
     SimpleAdapter sAdapter;
     Elements title;
-    int k=0;
+    int k=0, cute;
     int t=15; //t - индекс последнего прогруженного элемента
     boolean isFirstTime=true;
     @Override
@@ -54,8 +54,17 @@ public class News extends ListActivity{
         String filename = "TitlesList";
         File file = new File(getFilesDir(), filename);
         new siteParser().execute();//Парсим из сайта/файла.
-       if ((file.exists()||file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
+        while ((!file.exists()||file.length()==0)) cute=1;//Я не знаю, как его ещё затормозить :D
+       if ((file.exists()&&file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
        {
+           for (int i=0; i<t; i++) if (i<k) { //пихаем первые 15 новостей в массив
+               Map<String,Object> m;
+               m = new HashMap<String, Object>();
+               m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
+               m.put(ATTRIBUTE_NAME_IMAGE,R.drawable.ic_launcher);
+               m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
+               data.add(m);
+           }
            String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT};
            // массив ID View-компонентов, в которые будут вставлять данные
            int[] to = {R.id.tvText, R.id.ivImg, R.id.tvDate};
@@ -66,9 +75,9 @@ public class News extends ListActivity{
            setListAdapter(animationAdapter);//Ставим адаптер с анимацией
            sAdapter.notifyDataSetChanged();// Ставим уведомлялку изменения контента на адаптер
            isFirstTime = false;
+           getListView().setOnScrollListener(scrollListener); //Cвязываем наш список с ScrollListener(он создан ниже)
        }
-       new siteParser().execute();//Парсим из сайта/файла.
-       getListView().setOnScrollListener(scrollListener); //Cвязываем наш список с ScrollListener(он создан ниже)
+
     }
 
     @Override
@@ -166,8 +175,8 @@ public class News extends ListActivity{
         public void onScroll(AbsListView absListView, int first, int i2, int total) { //AbsListView absListView - список,
             //first - первый видимый элемент,  i2 - количество видимых элементов, total - всего элементов в списке
             Log.i("Первый элемент в списке:", Integer.toString(first));
-            if (first==total-i2&&total<k) {
-                for (int i=t; i<t+15; i++) if (i<299) { //пихаем новые 15 новостей в массив
+            if ((first==total-i2&&total<k)||total==0) {
+                for (int i=t; i<t+15; i++) if (i<k) { //пихаем новые 15 новостей в массив
                     Map<String,Object> m;
                     m = new HashMap<String, Object>();
                     m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
