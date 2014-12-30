@@ -21,6 +21,6 @@
         android:divider="#ffd7eaed"
         android:clickable="true"
         android:fastScrollEnabled="false"
-        android:focusable="true"></ListView>
+        android:focusable="true"/>
 
 </LinearLayout>

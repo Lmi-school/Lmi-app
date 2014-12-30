@@ -9,12 +9,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-
-import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.ScaleInAnimationAdapter;
-import com.nhaarman.listviewanimations.appearance.simple.SwingBottomInAnimationAdapter;
-import com.nhaarman.listviewanimations.appearance.simple.SwingRightInAnimationAdapter;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,16 +19,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
-public class News extends ListActivity{
+public class News extends ListActivity {
     int newsCount = 0;
-    public static ArrayList<String> newslist = new ArrayList<String>();
+    public static ArrayList<String> referencelist = new ArrayList<String>();
     public static ArrayList<String> titlelist = new ArrayList<String>();
     public static ArrayList<String> datelist = new ArrayList<String>();
     public static ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(100000);
@@ -42,7 +36,8 @@ public class News extends ListActivity{
     final String ATTRIBUTE_NAME_DATETEXT = "date";
     SimpleAdapter sAdapter;
     Elements title;
-    int k=0, cute;
+    Elements references;
+    int k=0,cute ,num=0;
     int t=15; //t - индекс последнего прогруженного элемента
     boolean isFirstTime=true;
     @Override
@@ -53,8 +48,11 @@ public class News extends ListActivity{
         setContentView(R.layout.activity_news);
         String filename = "TitlesList";
         File file = new File(getFilesDir(), filename);
+        String file_ref_name = "NewsList";
+        File file_ref = new File(getFilesDir(), file_ref_name);
         new siteParser().execute();//Парсим из сайта/файла.
         while ((!file.exists()||file.length()==0)) cute=1;//Я не знаю, как его ещё затормозить :D
+        while ((!file_ref.exists()||file.length()==0)) cute = 1;
        if ((file.exists()&&file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
        {
            for (int i=0; i<t; i++) if (i<k) { //пихаем первые 15 новостей в массив
@@ -100,26 +98,36 @@ public class News extends ListActivity{
             Document Page;
             titlelist.clear();
             datelist.clear();
+            referencelist.clear();
             String filename = "TitlesList";
             File file = new File(getFilesDir(), filename);
-            String file_gen_name = "NewsList";
-            File file_gen = new File(getFilesDir(), file_gen_name);
-            if ((!file.exists()||file.length()==0)) {
+            String file_ref_name = "NewsList";
+            File file_ref = new File(getFilesDir(), file_ref_name);
+            if (!(file.exists()&&file.length()!=0&&file_ref.exists()&&file.length()!=0)) {
                 try {
                     Log.i("Parsing", "started");
                     file.createNewFile();
+                    file_ref.createNewFile();
                     BufferedWriter output = new BufferedWriter(new FileWriter(file));
+                    BufferedWriter outref = new BufferedWriter(new FileWriter(file_ref));
                     String site = "http://lmi-school.ru/?p=2";
                     Page = Jsoup.connect(site).get();
                     title = Page.select(".titlediv");
+                    references = Page.select(".text [align=right] a"); //ключевая строка, где мы вынимаем ссылки
                     for (Element titles : title) {
                         titlelist.add(titles.text().substring(13));
                         datelist.add(titles.text().substring(0, 10));
                         output.write(titles.text() + "\n");
                         k++;
                     }
-                    output.close();
-                    Log.i("Parsing", "finished, t="+Integer.toString(t));
+                    for (Element referens : references) {
+                        referencelist.add(referens.attr("href").substring(0)); //пихаем ссылки в массив
+                        num++;
+                        Log.i("Num", "processing, num="+Integer.toString(num)+referens.attr("href"));
+                        outref.write(referens.attr("href")+"\n");//и заодно пишем файл
+                    }
+                    output.close(); //Закрываем файлы
+                    outref.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -134,13 +142,19 @@ public class News extends ListActivity{
                         k++;
                         Log.i("Parsing", "k="+Integer.toString(k));
                     }
+                    BufferedReader inref = new BufferedReader((new FileReader(file_ref)));
+                    String line2;
+                    while ((line2 = inref.readLine()) != null) {
+                        referencelist.add(line2);
+                        num++;
+                        Log.i("Num", "processing, num="+Integer.toString(num)+line2);
+                    }
                     Log.i("Parsing", "finished, t="+Integer.toString(t));
                 }
                 catch (IOException e){
                     e.printStackTrace();
                 }
             }
-            //btnCreate.setEnabled(true);
             return null;
         }
     }
@@ -155,14 +169,11 @@ public class News extends ListActivity{
 
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
+    protected void onListItemClick(ListView l, View v, int position, long id) { //position - позиция тыкаемого велосипеда
         Intent intent = new Intent(News.this,CurrentNews.class);
-        startActivity(intent);
-        //TODO В этой активности нужно сделать вывод полной статьи/новости с сайта
-        Log.i("poz", Integer.toString(position));
-        //intent.putExtra("new",newslist.get(position));
+        intent.putExtra("reference",referencelist.get(position)); //передаем в другую активность кусочек ссылки
+        startActivity(intent);//запускаем активность
         super.onListItemClick(l, v, position, id);
-
 
     }
     AbsListView.OnScrollListener scrollListener = new AbsListView.OnScrollListener() { //Создаем обработчик прокрутки
