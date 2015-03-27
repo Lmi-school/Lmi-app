@@ -4,41 +4,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:orientation="vertical"
-    android:layout_height="fill_parent">
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Create"
-            android:id="@+id/btnCreate" />
+    android:layout_height="fill_parent"
+    android:background="#ffd7eaed"
+    android:animateLayoutChanges="true">
 
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Clear"
-            android:id="@+id/btnClear" />
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Refresh"
-            android:id="@+id/btnRefresh" />
-    </LinearLayout>
-    <com.students.lmi.lmi_app.MyScrollView
-        android:id="@+id/scrollView"
+
+    <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#EBEBEB">
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:id="@+id/mainLinear">
-        </LinearLayout>
-    </com.students.lmi.lmi_app.MyScrollView>
+        android:id="@android:id/list"
+        android:smoothScrollbar="true"
+        android:dividerHeight="10dp"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true"
+        android:padding="10dp"
+        android:divider="#ffd7eaed"
+        android:clickable="true"
+        android:fastScrollEnabled="false"
+        android:focusable="true"/>
+
 </LinearLayout>
