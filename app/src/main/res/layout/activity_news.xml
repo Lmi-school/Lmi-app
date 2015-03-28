@@ -5,22 +5,32 @@
     android:layout_width="fill_parent"
     android:orientation="vertical"
     android:layout_height="fill_parent"
-    android:background="#ffd7eaed"
-    android:animateLayoutChanges="true">
+    android:background="#ffcaf1ff"
+    android:animateLayoutChanges="true"
+    android:divider="#ff7ecaff">
 
 
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@android:id/list"
-        android:smoothScrollbar="true"
-        android:dividerHeight="10dp"
+
+        android:scrollbars="none"
+        android:dividerHeight="7dp"
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true"
         android:padding="10dp"
-        android:divider="#ffd7eaed"
         android:clickable="true"
         android:fastScrollEnabled="false"
-        android:focusable="true"/>
+        android:focusable="true"
+        android:background="#ffcaf1ff"
+        android:divider="#ffcaf1ff" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

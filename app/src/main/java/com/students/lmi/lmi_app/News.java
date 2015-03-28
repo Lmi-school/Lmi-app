@@ -1,5 +1,7 @@
 package com.students.lmi.lmi_app;
+import android.app.Dialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,12 +38,18 @@ public class News extends ListActivity {
     final String ATTRIBUTE_NAME_DATETEXT = "date";
     SimpleAdapter sAdapter;
     Elements title;
+    Dialog dialog;
     Elements references;
     int k=0,cute ,num=0;
     int t=15; //t - индекс последнего прогруженного элемента
+    int colors[] = {R.drawable.p1,R.drawable.p2,R.drawable.p3,R.drawable.p4,R.drawable.p5};
     boolean isFirstTime=true;
+    boolean isCreated;
+    ScaleInAnimationAdapter animationAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent1 = new Intent(News.this,DownLoading.class);
+        isCreated = false;
         newsCount = 0;
         t = 0;
         super.onCreate(savedInstanceState);
@@ -50,34 +58,43 @@ public class News extends ListActivity {
         File file = new File(getFilesDir(), filename);
         String file_ref_name = "NewsList";
         File file_ref = new File(getFilesDir(), file_ref_name);
+
+        dialog = ProgressDialog.show(News.this,"HH","h");
         new siteParser().execute();//Парсим из сайта/файла.
-        while ((!file.exists()||file.length()==0)) cute=1;//Я не знаю, как его ещё затормозить :D
-        while ((!file_ref.exists()||file.length()==0)) cute = 1;
-       if ((file.exists()&&file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
-       {
-           for (int i=0; i<t; i++) if (i<k) { //пихаем первые 15 новостей в массив
-               Map<String,Object> m;
-               m = new HashMap<String, Object>();
-               m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
-               m.put(ATTRIBUTE_NAME_IMAGE,R.drawable.ic_launcher);
-               m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
-               data.add(m);
-           }
-           String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT};
-           // массив ID View-компонентов, в которые будут вставлять данные
-           int[] to = {R.id.tvText, R.id.ivImg, R.id.tvDate};
-           sAdapter = new SimpleAdapter(this, data, R.layout.item, from, to);
+        //while ((!file.exists()||file.length()==0)) cute=1;//Я не знаю, как его ещё затормозить :D
+        //while ((!file_ref.exists()||file.length()==0)) cute = 1;
 
-           ScaleInAnimationAdapter animationAdapter = new ScaleInAnimationAdapter(sAdapter);
-           animationAdapter.setAbsListView(getListView());
-           setListAdapter(animationAdapter);//Ставим адаптер с анимацией
-           sAdapter.notifyDataSetChanged();// Ставим уведомлялку изменения контента на адаптер
-           isFirstTime = false;
-           getListView().setOnScrollListener(scrollListener); //Cвязываем наш список с ScrollListener(он создан ниже)
-       }
-
+        showResult();
     }
 
+    public void showResult() {
+        String filename = "TitlesList";
+        File file = new File(getFilesDir(), filename);
+        String file_ref_name = "NewsList";
+        File file_ref = new File(getFilesDir(), file_ref_name);
+        if ((file.exists()&&file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
+        {
+            for (int i=0; i<t; i++) if (i<k) { //пихаем первые 15 новостей в массив
+                Map<String,Object> m;
+                m = new HashMap<String, Object>();
+                m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
+                m.put(ATTRIBUTE_NAME_IMAGE,colors[i%5]);
+                m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
+                data.add(m);
+            }
+            String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT};
+            // массив ID View-компонентов, в которые будут вставлять данные
+            int[] to = {R.id.tvText, R.id.ivImg, R.id.tvDate};
+            sAdapter = new SimpleAdapter(this, data, R.layout.item, from, to);
+
+
+            setListAdapter(sAdapter);
+            sAdapter.notifyDataSetChanged();// Ставим уведомлялку изменения контента на адаптер
+            isFirstTime = false;
+            getListView().setOnScrollListener(scrollListener); //Cвязываем наш список с ScrollListener(он создан ниже)
+        }
+
+    }
     @Override
     protected void onPause(){
         super.onPause();
@@ -155,7 +172,15 @@ public class News extends ListActivity {
                     e.printStackTrace();
                 }
             }
+            isCreated = true;
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            showResult();
+            dialog.dismiss();
+            super.onPostExecute(s);
         }
     }
 
@@ -185,13 +210,13 @@ public class News extends ListActivity {
         @Override
         public void onScroll(AbsListView absListView, int first, int i2, int total) { //AbsListView absListView - список,
             //first - первый видимый элемент,  i2 - количество видимых элементов, total - всего элементов в списке
-            Log.i("Первый элемент в списке:", Integer.toString(first));
+            Log.i("Первый элемент в списке", Integer.toString(first));
             if ((first==total-i2&&total<k)||total==0) {
                 for (int i=t; i<t+15; i++) if (i<k) { //пихаем новые 15 новостей в массив
                     Map<String,Object> m;
                     m = new HashMap<String, Object>();
                     m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
-                    m.put(ATTRIBUTE_NAME_IMAGE,R.drawable.ic_launcher);
+                    m.put(ATTRIBUTE_NAME_IMAGE,colors[i%5]);
                     m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
                     data.add(m);
                 }

@@ -3,27 +3,34 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:background="#ffcaf1ff">
 
 
-    <ScrollView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/scrollView"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="10dp"
-        android:background="#ff9dddff">
+        android:background="@drawable/shade">
 
-        <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/articleText"
-                android:text="@android:string/untitled"
-                android:layout_gravity="center_horizontal"
-                android:textColorHighlight="#ffffffff"
-                android:textSize="20dp" />
-    </ScrollView>
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scrollView"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp">
+
+            <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/articleText"
+                    android:text="@android:string/untitled"
+                    android:layout_gravity="center_horizontal"
+                    android:textColorHighlight="#ffffffff"
+                    android:textSize="20dp" />
+        </ScrollView>
+    </LinearLayout>
 
 
 </RelativeLayout>

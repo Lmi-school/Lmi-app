@@ -8,4 +8,5 @@
         <item>Новости</item>
         <item>Расписание</item>
     </string-array>
+    <string name="title_activity_down_loading">DownLoading</string>
 </resources>
