@@ -59,7 +59,7 @@ public class News extends ListActivity {
         String file_ref_name = "NewsList";
         File file_ref = new File(getFilesDir(), file_ref_name);
 
-        dialog = ProgressDialog.show(News.this,"HH","h");
+        dialog = ProgressDialog.show(News.this,"Загрузка","Подождите, новости загружаются...");
         new siteParser().execute();//Парсим из сайта/файла.
         //while ((!file.exists()||file.length()==0)) cute=1;//Я не знаю, как его ещё затормозить :D
         //while ((!file_ref.exists()||file.length()==0)) cute = 1;
