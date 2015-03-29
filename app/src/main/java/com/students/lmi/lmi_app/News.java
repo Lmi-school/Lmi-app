@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -13,8 +14,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.ScaleInAnimationAdapter;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -32,7 +32,7 @@ import org.jsoup.select.Elements;
 
 
 
-public class News extends ListActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class News extends ListActivity{
     int newsCount = 0;
     public static ArrayList<String> referencelist = new ArrayList<String>();
     public static ArrayList<String> titlelist = new ArrayList<String>();
@@ -43,7 +43,6 @@ public class News extends ListActivity implements SwipeRefreshLayout.OnRefreshLi
     final String ATTRIBUTE_NAME_DATETEXT = "date";
     SimpleAdapter sAdapter;
     Elements title;
-
     Dialog dialog, dialog2;
     Elements references;
     int k=0,cute ,num=0;
@@ -55,33 +54,35 @@ public class News extends ListActivity implements SwipeRefreshLayout.OnRefreshLi
     ScaleInAnimationAdapter animationAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         Intent intent1 = new Intent(News.this,DownLoading.class);
         isCreated = false;
         newsCount = 0;
         t = 0;
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
         String filename = "TitlesList";
         File file = new File(getFilesDir(), filename);
         String file_ref_name = "NewsList";
         File file_ref = new File(getFilesDir(), file_ref_name);
-
         dialog = ProgressDialog.show(News.this,"Загрузка","Подождите, новости загружаются...");
         new siteParser().execute();//Парсим из сайта/файла.
-        refreshLayout.setOnRefreshListener(this);
-
         showResult();
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.reflv);
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.reflv);
+        if (refreshLayout== null) Log.i("NULL","IT'S STILL UNKNOWN");
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                String filename = "TitlesList";
+                File file = new File(getFilesDir(), filename);
+                String file_ref_name = "NewsList";
+                File file_ref = new File(getFilesDir(), file_ref_name);
+                if (file.exists()&&file.length()!=0) file.delete();
+                if (file_ref.exists()&&file.length()!=0) file_ref.delete();
+                new siteParser().execute();
+            }
+        });
     }
-
-    @Override
-    public void onRefresh() {
-        refreshLayout.setRefreshing(true);
-        new siteParser().execute();
-    }
-
     public void showResult() {
         String filename = "TitlesList";
         File file = new File(getFilesDir(), filename);
@@ -117,12 +118,10 @@ public class News extends ListActivity implements SwipeRefreshLayout.OnRefreshLi
 
     @Override
     protected void onResume(){
+
         if (dialog2!=null) dialog2.dismiss();
         super.onResume();
     }
-
-
-
     public class siteParser extends AsyncTask<String, Void, String> //непосредственно сам парсер
     {
         @Override
@@ -198,7 +197,7 @@ public class News extends ListActivity implements SwipeRefreshLayout.OnRefreshLi
         protected void onPostExecute(String s) {
             showResult();
             dialog.dismiss();
-            if (refreshLayout.isRefreshing()) refreshLayout.setRefreshing(false);
+            refreshLayout.setRefreshing(false);
             super.onPostExecute(s);
 
         }
@@ -217,7 +216,6 @@ public class News extends ListActivity implements SwipeRefreshLayout.OnRefreshLi
     protected void onListItemClick(ListView l, View v, int position, long id) { //position - позиция тыкаемого велосипеда
         Intent intent = new Intent(News.this,CurrentNews.class);
         dialog2 = ProgressDialog.show(News.this,"Загрузка", "Подождите, новость загружается...");
-
         intent.putExtra("reference",referencelist.get(position)); //передаем в другую активность кусочек ссылки
         startActivity(intent);//запускаем активность
         super.onListItemClick(l, v, position, id);
