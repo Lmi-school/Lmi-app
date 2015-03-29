@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="fill_parent"
     android:orientation="vertical"
     android:layout_height="fill_parent"
     android:background="#ffcaf1ff"
     android:animateLayoutChanges="true"
     android:divider="#ff7ecaff">
-
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.students.lmi.lmi_app.News">
 
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@android:id/list"
-
-
         android:dividerHeight="7dp"
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true"
@@ -27,7 +31,7 @@
         android:divider="#ffcaf1ff"
         android:paddingBottom="5dp"
         android:paddingTop="5dp" />
-
+</android.support.v4.widget.SwipeRefreshLayout>
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
