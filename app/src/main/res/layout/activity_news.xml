@@ -16,7 +16,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@android:id/list"
-        android:dividerHeight="7dp"
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true"
 
@@ -24,9 +23,9 @@
         android:fastScrollEnabled="false"
         android:focusable="true"
         android:background="#ffcaf1ff"
-        android:divider="#ffcaf1ff"
-        android:paddingBottom="5dp"
-        android:paddingTop="5dp" />
+        android:divider="#ffcaf1ff" />
+    <!--android:paddingTop="5dp"
+    android:paddingBottom="5dp"-->
 
 
 

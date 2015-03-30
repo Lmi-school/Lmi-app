@@ -45,7 +45,7 @@ public class News extends ListActivity{
     Elements title;
     Dialog dialog, dialog2;
     Elements references;
-    int k=0,cute ,num=0;
+    int k=0, num=0;
     int t=15; //t - индекс последнего прогруженного элемента
     int colors[] = {R.drawable.p1,R.drawable.p2,R.drawable.p3,R.drawable.p4,R.drawable.p5};
     boolean isFirstTime=true;
@@ -65,11 +65,13 @@ public class News extends ListActivity{
         String file_ref_name = "NewsList";
         File file_ref = new File(getFilesDir(), file_ref_name);
         dialog = ProgressDialog.show(News.this,"Загрузка","Подождите, новости загружаются...");
+        //if (!file.exists() || file.length() == 0)
         new siteParser().execute();//Парсим из сайта/файла.
         showResult();
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.reflv);
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.reflv);
-        if (refreshLayout== null) Log.i("NULL","IT'S STILL UNKNOWN");
+        //refreshLayout = (SwipeRefreshLayout) findViewById(R.id.reflv);
+        if (refreshLayout== null)
+            Log.i("NULL","IT'S STILL UNKNOWN");
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -77,8 +79,10 @@ public class News extends ListActivity{
                 File file = new File(getFilesDir(), filename);
                 String file_ref_name = "NewsList";
                 File file_ref = new File(getFilesDir(), file_ref_name);
-                if (file.exists()&&file.length()!=0) file.delete();
-                if (file_ref.exists()&&file.length()!=0) file_ref.delete();
+                if (file.exists()&&file.length()!=0)
+                    file.delete();
+                if (file_ref.exists()&&file_ref.length()!=0)
+                    file_ref.delete();
                 new siteParser().execute();
             }
         });
@@ -119,7 +123,8 @@ public class News extends ListActivity{
     @Override
     protected void onResume(){
 
-        if (dialog2!=null) dialog2.dismiss();
+        if (dialog2!=null)
+            dialog2.dismiss();
         super.onResume();
     }
     public class siteParser extends AsyncTask<String, Void, String> //непосредственно сам парсер
@@ -127,6 +132,7 @@ public class News extends ListActivity{
         @Override
         protected String doInBackground(String... arg)
         {
+            num=0;
             k=0;
             Log.i("Parsing", "started");
             Document Page;
@@ -137,7 +143,8 @@ public class News extends ListActivity{
             File file = new File(getFilesDir(), filename);
             String file_ref_name = "NewsList";
             File file_ref = new File(getFilesDir(), file_ref_name);
-            if (!(file.exists()&&file.length()!=0&&file_ref.exists()&&file.length()!=0)) {
+            //if (!(file.exists()&&file.length()!=0&&file_ref.exists()&&file_ref.length()!=0)) {
+            if ((!file.exists()||file.length()==0)&&(!file_ref.exists()||file_ref.length()==0)){
                 try {
                     Log.i("Parsing", "started");
                     file.createNewFile();
@@ -214,10 +221,13 @@ public class News extends ListActivity{
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) { //position - позиция тыкаемого велосипеда
-        Intent intent = new Intent(News.this,CurrentNews.class);
-        dialog2 = ProgressDialog.show(News.this,"Загрузка", "Подождите, новость загружается...");
-        intent.putExtra("reference",referencelist.get(position)); //передаем в другую активность кусочек ссылки
-        startActivity(intent);//запускаем активность
+        if (referencelist.size() != 0) {
+            Intent intent = new Intent(News.this, CurrentNews.class);
+            dialog2 = ProgressDialog.show(News.this, "Загрузка", "Подождите, новость загружается...");
+
+            intent.putExtra("reference", referencelist.get(position)); //передаем в другую активность кусочек ссылки
+            startActivity(intent);//запускаем активность
+        }
         super.onListItemClick(l, v, position, id);
 
     }

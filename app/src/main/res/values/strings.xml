@@ -4,6 +4,8 @@
     <string name="app_name">Lmi-app</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="test_date">Some date</string>
+    <string name="test_text">Some text</string>
     <string-array name="action_list">
         <item>Новости</item>
         <item>Расписание</item>
