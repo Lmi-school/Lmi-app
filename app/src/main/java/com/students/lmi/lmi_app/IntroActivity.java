@@ -2,9 +2,11 @@ package com.students.lmi.lmi_app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,6 +18,9 @@ public class IntroActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
+        TextView textview = (TextView) findViewById(R.id.appName);
+        Typeface font = Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/IntroFont.ttf");
+        textview.setTypeface(font);
         getActionBar().hide();
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
