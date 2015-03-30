@@ -46,7 +46,8 @@ public class News extends ListActivity{
     Dialog dialog, dialog2;
     Elements references;
     int k=0, num=0;
-    int t=15; //t - индекс последнего прогруженного элемента
+    int newsLoadCount = 15; // newsLoadCount - количество новостей для прогрузки в списке
+    int lastLoaded = 0; //lastLoaded - индекс последнего прогруженного элемента
     int colors[] = {R.drawable.p1,R.drawable.p2,R.drawable.p3,R.drawable.p4,R.drawable.p5};
     boolean isFirstTime=true;
     boolean isCreated;
@@ -58,7 +59,6 @@ public class News extends ListActivity{
 
         isCreated = false;
         newsCount = 0;
-        t = 0;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
         String filename = "TitlesList";
@@ -68,7 +68,6 @@ public class News extends ListActivity{
         dialog = ProgressDialog.show(News.this,"Загрузка","Подождите, новости загружаются...");
         //if (!file.exists() || file.length() == 0)
         new siteParser().execute();//Парсим из сайта/файла.
-        showResult();
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.reflv);
         //refreshLayout = (SwipeRefreshLayout) findViewById(R.id.reflv);
         if (refreshLayout== null)
@@ -95,14 +94,16 @@ public class News extends ListActivity{
         File file_ref = new File(getFilesDir(), file_ref_name);
         if ((file.exists()&&file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
         {
-            for (int i=0; i<t; i++) if (i<k) { //пихаем первые 15 новостей в массив
+            for (int i=0; i<k && i<newsLoadCount; i++){  //пихаем первую партию новостей в массив
                 Map<String,Object> m;
                 m = new HashMap<String, Object>();
                 m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
-                m.put(ATTRIBUTE_NAME_IMAGE,colors[i%5]);
+                m.put(ATTRIBUTE_NAME_IMAGE, colors[i%5]);
                 m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
                 data.add(m);
+                lastLoaded++;
             }
+                Log.i("Loading news from", "0 to "+Integer.toString(lastLoaded-1));
             String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT};
             // массив ID View-компонентов, в которые будут вставлять данные
             int[] to = {R.id.tvText, R.id.ivImg, R.id.tvDate};
@@ -133,8 +134,8 @@ public class News extends ListActivity{
         @Override
         protected String doInBackground(String... arg)
         {
-            num=0;
-            k=0;
+            num = 0;
+            k = 0;
             Log.i("Parsing", "started");
             Document Page;
             titlelist.clear();
@@ -177,6 +178,7 @@ public class News extends ListActivity{
             else {
                 try {
                     BufferedReader input = new BufferedReader(new FileReader(file));
+                    BufferedReader inref = new BufferedReader((new FileReader(file_ref)));
                     String line;
                     while ((line = input.readLine()) != null) {
                         titlelist.add(line.substring(13));
@@ -184,14 +186,15 @@ public class News extends ListActivity{
                         k++;
                         Log.i("Parsing", "k="+Integer.toString(k));
                     }
-                    BufferedReader inref = new BufferedReader((new FileReader(file_ref)));
                     String line2;
                     while ((line2 = inref.readLine()) != null) {
                         referencelist.add(line2);
                         num++;
-                        Log.i("Num", "processing, num="+Integer.toString(num)+line2);
+                        Log.i("Num", "processing, num ="+Integer.toString(num)+line2);
                     }
-                    Log.i("Parsing", "finished, t="+Integer.toString(t));
+                    Log.i("Parsing", "finished, t ="+Integer.toString(lastLoaded));
+                    input.close();
+                    inref.close();
                 }
                 catch (IOException e){
                     e.printStackTrace();
@@ -242,8 +245,8 @@ public class News extends ListActivity{
         public void onScroll(AbsListView absListView, int first, int i2, int total) { //AbsListView absListView - список,
             //first - первый видимый элемент,  i2 - количество видимых элементов, total - всего элементов в списке
             Log.i("Первый элемент в списке", Integer.toString(first));
-            if ((first==total-i2&&total<k)||total==0) {
-                for (int i=t; i<t+15; i++) if (i<k) { //пихаем новые 15 новостей в массив
+            if ((first == total - i2 && total < k) || total==0) {
+                for (int i = lastLoaded; i < k && i < lastLoaded+newsLoadCount; i++){ //пихаем новую партию новостей в массив
                     Map<String,Object> m;
                     m = new HashMap<String, Object>();
                     m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
@@ -251,7 +254,8 @@ public class News extends ListActivity{
                     m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
                     data.add(m);
                 }
-                t+=15; //изменяем ту самую t на 15
+                Log.i("Loading news from", Integer.toString(lastLoaded)+" to "+Integer.toString(lastLoaded+newsLoadCount-1));
+                lastLoaded += newsLoadCount; // обновляем номер последней загруженной новости
                 sAdapter.notifyDataSetChanged(); //Ставим уведомитель x2
             }
         }
