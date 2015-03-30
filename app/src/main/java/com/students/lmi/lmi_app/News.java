@@ -54,7 +54,8 @@ public class News extends ListActivity{
     ScaleInAnimationAdapter animationAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent intent1 = new Intent(News.this,DownLoading.class);
+        Intent intent1 = new Intent(News.this,IntroActivity.class);
+
         isCreated = false;
         newsCount = 0;
         t = 0;

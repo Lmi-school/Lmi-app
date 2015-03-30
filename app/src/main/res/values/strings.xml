@@ -11,4 +11,5 @@
         <item>Расписание</item>
     </string-array>
     <string name="title_activity_down_loading">DownLoading</string>
+    <string name="title_activity_intro">IntroActivity</string>
 </resources>
