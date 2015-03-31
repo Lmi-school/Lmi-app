@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import org.jsoup.Jsoup;
@@ -13,10 +16,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CurrentNews extends Activity{
     String ref;
-    TextView article;
+    WebView article;
     String article_text;
     Elements title;
     boolean done = false;
@@ -27,8 +31,9 @@ public class CurrentNews extends Activity{
         setContentView(R.layout.activity_current_news);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         ref = getIntent().getExtras().getString("reference");
-        article = (TextView)findViewById(R.id.articleText);
-        article.setText("Загрузка...");
+        article = (WebView)findViewById(R.id.articleText);
+        //article.setText("Загрузка...");
+        article.loadData("Загрузка...", "text/html", "utf-8");
     }
 
     @Override
@@ -39,9 +44,9 @@ public class CurrentNews extends Activity{
     @Override
     protected void onResume(){
         new siteParser().execute();
-        //while (!done) cute=1;
-        while (!done) article.setText(article_text); //done - переменная, проверяющая, не сделан ли случайно парсинг.
-        article.setText(article_text);
+        while (!done) article.loadDataWithBaseURL(null, article_text, "text/html", "utf-8", null); //done - переменная, проверяющая, не сделан ли случайно парсинг.
+            article.loadDataWithBaseURL(null, article_text, "text/html", "utf-8", null);
+        //article.setText(article_text);
         super.onResume();
     }
 
@@ -56,8 +61,9 @@ public class CurrentNews extends Activity{
                     page = Jsoup.connect("http://www.lmi-school.ru/"+ref).get();
                     title = page.select(".text [align=justify]");
                     Log.i("PARSING NEW", "started http://www.lmi-school.ru/"+ref);
-                    for (Element titles : title)
-                        article_text = titles.text();
+                    for (Element titles : title) {
+                        article_text = "<html><body>"+titles.html()+"</body><html>";
+                    }
                     done = true;
                 } catch (IOException e) {
                     e.printStackTrace();
