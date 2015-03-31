@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
+
 import com.nhaarman.listviewanimations.appearance.simple.ScaleInAnimationAdapter;
 
 import java.io.BufferedReader;
@@ -47,7 +49,7 @@ public class News extends ListActivity{
     Elements references;
     int k=0, num=0;
     int newsLoadCount = 15; // newsLoadCount - количество новостей для прогрузки в списке
-    int lastLoaded = 0; //lastLoaded - индекс последнего прогруженного элемента
+    public static int lastLoaded = 0; //lastLoaded - индекс последнего прогруженного элемента
     int colors[] = {R.drawable.p1,R.drawable.p2,R.drawable.p3,R.drawable.p4,R.drawable.p5};
     boolean isFirstTime=true;
     boolean isCreated;
@@ -56,7 +58,8 @@ public class News extends ListActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent intent1 = new Intent(News.this,IntroActivity.class);
-
+        /*Toast lastLoad = Toast.makeText(this, "Last loaded: "+Integer.toString(lastLoaded), Toast.LENGTH_SHORT);
+        lastLoad.show();*/
         isCreated = false;
         newsCount = 0;
         super.onCreate(savedInstanceState);
@@ -215,12 +218,16 @@ public class News extends ListActivity{
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) { //position - позиция тыкаемого велосипеда
-        if (referencelist.size() != 0) {
+        if (referencelist.size() != 0 && position < k) {
             Intent intent = new Intent(News.this, CurrentNews.class);
             dialog2 = ProgressDialog.show(News.this, "Загрузка", "Подождите, новость загружается...");
 
             intent.putExtra("reference", referencelist.get(position)); //передаем в другую активность кусочек ссылки
             startActivity(intent);//запускаем активность
+        }
+        else{
+            Toast errMsg = Toast.makeText(this, "Oops, u r addresing "+Integer.toString(position)+" out of "+Integer.toString(k-1), Toast.LENGTH_SHORT);
+            errMsg.show();
         }
         super.onListItemClick(l, v, position, id);
 
