@@ -94,16 +94,6 @@ public class News extends ListActivity{
         File file_ref = new File(getFilesDir(), file_ref_name);
         if ((file.exists()&&file.length()!=0)) //Если файл с кэшем создан и не пуст, то подгружаем новости (Первые 15)
         {
-            for (int i=0; i<k && i<newsLoadCount; i++){  //пихаем первую партию новостей в массив
-                Map<String,Object> m;
-                m = new HashMap<String, Object>();
-                m.put(ATTRIBUTE_NAME_TEXT, titlelist.get(i));
-                m.put(ATTRIBUTE_NAME_IMAGE, colors[i%5]);
-                m.put(ATTRIBUTE_NAME_DATETEXT, datelist.get(i));
-                data.add(m);
-                lastLoaded++;
-            }
-                Log.i("Loading news from", "0 to "+Integer.toString(lastLoaded-1));
             String[] from = {ATTRIBUTE_NAME_TEXT, ATTRIBUTE_NAME_IMAGE, ATTRIBUTE_NAME_DATETEXT};
             // массив ID View-компонентов, в которые будут вставлять данные
             int[] to = {R.id.tvText, R.id.ivImg, R.id.tvDate};
