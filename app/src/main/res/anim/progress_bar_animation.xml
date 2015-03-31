@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:oneshot="false">
+    <item android:drawable="@drawable/progressbar1" android:duration="50" />
+    <item android:drawable="@drawable/progressbar2" android:duration="50" />
+    <item android:drawable="@drawable/progressbar3" android:duration="50" />
+    <item android:drawable="@drawable/progressbar4" android:duration="50" />
+    <item android:drawable="@drawable/progressbar5" android:duration="50" />
+    <item android:drawable="@drawable/progressbar6" android:duration="50" />
+    <item android:drawable="@drawable/progressbar7" android:duration="50" />
+    <item android:drawable="@drawable/progressbar8" android:duration="50" />
+    <item android:drawable="@drawable/progressbar9" android:duration="50" />
+    <item android:drawable="@drawable/progressbar10" android:duration="50" />
+    <item android:drawable="@drawable/progressbar11" android:duration="50" />
+    <item android:drawable="@drawable/progressbar12" android:duration="50" />
+    <item android:drawable="@drawable/progressbar13" android:duration="50" />
+    <item android:drawable="@drawable/progressbar14" android:duration="50" />
+    <item android:drawable="@drawable/progressbar15" android:duration="50" />
+    <item android:drawable="@drawable/progressbar16" android:duration="50" />
+    <item android:drawable="@drawable/progressbar17" android:duration="50" />
+    <item android:drawable="@drawable/progressbar18" android:duration="50" />
+    <item android:drawable="@drawable/progressbar19" android:duration="50" />
+    <item android:drawable="@drawable/progressbar20" android:duration="50" />
+    <item android:drawable="@drawable/progressbar21" android:duration="50" />
+    <item android:drawable="@drawable/progressbar22" android:duration="50" />
+    <item android:drawable="@drawable/progressbar23" android:duration="50" />
+    <item android:drawable="@drawable/progressbar24" android:duration="50" />
+    <item android:drawable="@drawable/progressbar25" android:duration="50" />
+    <item android:drawable="@drawable/progressbar26" android:duration="50" />
+    <item android:drawable="@drawable/progressbar27" android:duration="50" />
+    <item android:drawable="@drawable/progressbar28" android:duration="50" />
+    <item android:drawable="@drawable/progressbar29" android:duration="50" />
+    <item android:drawable="@drawable/progressbar30" android:duration="50" />
+</animation-list>

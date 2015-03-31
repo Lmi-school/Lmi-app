@@ -1,11 +1,14 @@
 package com.students.lmi.lmi_app;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.Timer;
@@ -19,6 +22,9 @@ public class IntroActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         TextView textview = (TextView) findViewById(R.id.appName);
+        ProgressBar dialog = (ProgressBar) findViewById(R.id.progressBar);
+        dialog.setIndeterminate(true);
+        dialog.setIndeterminateDrawable(getResources().getDrawable(R.anim.progress_bar_animation));
         Typeface font = Typeface.createFromAsset(getBaseContext().getAssets(), "fonts/IntroFont.ttf");
         textview.setTypeface(font);
         getActionBar().hide();
